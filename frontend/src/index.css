@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Premium Modern Palette */
+    --primary: #0f172a;
+    --primary-light: #1e293b;
+    --accent: #6366f1;
+    /* Indigo */
+    --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --bg-app: #f1f5f9;
+    --bg-surface: rgba(255, 255, 255, 0.9);
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --radius: 12px;
+  }
+
+  body {
+    @apply bg-slate-100 text-slate-900;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0, transparent 50%),
+      radial-gradient(at 50% 0%, rgba(168, 85, 247, 0.05) 0, transparent 50%);
+  }
+}
+
+@utility glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+@utility glass-dark {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Premium Layout */
+.app-container {
+  display: grid;
+  grid-template-columns: 72px 1fr 340px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+@media (max-width: 1280px) {
+  .app-container {
+    grid-template-columns: 72px 1fr;
+  }
+}
+
+/* Navbar */
+.main-nav {
+  @apply bg-slate-900 flex flex-col items-center py-6 gap-6 shadow-2xl z-50;
+}
+
+.nav-item {
+  @apply w-12 h-12 flex items-center justify-center rounded-2xl text-slate-400 transition-all duration-300 hover:bg-white/10 hover:text-white cursor-pointer;
+}
+
+.nav-item.active {
+  @apply bg-indigo-600 text-white shadow-lg shadow-indigo-500/50 scale-110;
+}
+
+/* KPI Cards */
+.kpi-card {
+  @apply glass p-6 rounded-3xl border border-white shadow-xl shadow-slate-200/50 transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl;
+}
+
+/* Main Table Styling */
+.ticket-table-container {
+  @apply glass rounded-[32px] border border-white shadow-2xl overflow-hidden;
+}
+
+.table-row {
+  @apply grid grid-cols-12 px-6 py-4 border-b border-slate-100 hover:bg-slate-50/80 transition-all duration-200 items-center cursor-pointer;
+}
+
+.status-badge {
+  @apply text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold tracking-tight transition-all duration-300 hover:bg-slate-800 hover:shadow-xl active:scale-95 flex items-center gap-2;
+}
+
+.btn-accent {
+  background: var(--accent-gradient);
+  @apply text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all active:scale-95 flex items-center gap-2;
+}
+
+/* Sidebar Prediction Panel */
+.prediction-panel {
+  @apply h-full p-6 flex flex-col gap-6 overflow-y-auto border-l border-slate-200;
+  background: linear-gradient(to bottom, #ffffff, #f8fafc);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full hover:bg-slate-400;
+}

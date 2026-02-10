@@ -1,0 +1,104 @@
+# ------------------------------------------------------------
+# Strict GitHub Submission .gitignore (White-list Style)
+# ------------------------------------------------------------
+
+# Ignore everything by default
+*
+
+# Allow directories themselves
+!*/
+
+# ------------------------------------------------------------
+# ALLOWED DIRECTORIES (Source Code & Core Project)
+# ------------------------------------------------------------
+!backend/**
+!frontend/**
+!data/**
+!models/**
+!notebooks/**
+!IEEE_Paper_Submission/**
+
+# ------------------------------------------------------------
+# ALLOWED ROOT CONFIG FILES
+# ------------------------------------------------------------
+!README.md
+!requirements.txt
+!.gitignore
+!.gitattributes
+
+# ------------------------------------------------------------
+# EXPLICIT EXCLUSIONS (Even within allowed folders)
+# ------------------------------------------------------------
+
+# Python artifacts
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+**/.venv/
+**/venv/
+**/env/
+**/.env
+
+# Node.js artifacts
+**/node_modules/
+**/build/
+**/dist/
+**/.next/
+**/.cache/
+
+# Large files & Checkpoints
+**/*.csv
+**/*.xlsx
+**/*.pkl
+**/*.h5
+**/*.joblib
+**/*.pt
+**/*.pth
+**/*.safetensors
+**/.ipynb_checkpoints/
+notebooks/action_predictor_corporate/**
+
+# Exclude large CSVs specifically from data/ (if they were exempted above)
+data/raw/*.csv
+data/processed/*.csv
+
+# LaTeX & Paper Clutter
+**/*.aux
+**/*.log
+**/*.out
+**/*.toc
+**/*.synctex.gz
+**/*.fls
+**/*.fdb_latexmk
+**/*.pdf
+**/*.docx
+
+# IDE & OS Junk
+**/.vscode/
+**/.idea/
+**/.DS_Store
+**/Thumbs.db
+**/*.tmp
+**/*.bak
+
+# ------------------------------------------------------------
+# REDUNDANT OR EXPERIMENTAL FILES (Specific)
+# ------------------------------------------------------------
+COMPLETE_PAPER_CONTENT.txt
+requirements.txt.ipynb
+pipeline_workflow_diagram_*.png
+architecture_diagram_*.png
+assemble_*.py
+generate_*.py
+create_*.py
+fix_*.py
+extract_*.py
+repair_*.py
+check_*.py
+inspect_*.py
+package_*.py
+paper_*.py
+read_*.py
+full_paper_content.py
+complete_paper_content.py
