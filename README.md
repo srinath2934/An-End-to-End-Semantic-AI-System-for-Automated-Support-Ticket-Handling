@@ -9,7 +9,6 @@
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-[![IEEE](https://img.shields.io/badge/Published-ICPCSN%202026-00629B?style=for-the-badge&logo=ieee&logoColor=white)](https://icpcsn.org)
 
 *Predicts ticket category, team routing, priority, ETA, and generates AI-drafted responses — all in under 200ms.*
 
@@ -92,35 +91,59 @@ Given any customer support ticket (email/query), the system **automatically**:
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────────────────────────────────────┐
-│              React Frontend  (port 5173)          │
-│  Dashboard · Ticket View · Analytics · Data View  │
-└───────────────────┬─────────────────────────────┘
-                    │  REST API (JSON)
-                    ▼
-┌─────────────────────────────────────────────────┐
-│               FastAPI Backend  (port 8000)        │
-│                                                   │
-│  ┌──────────────────────────────────────────┐    │
-│  │         TicketModelHandler               │    │
-│  │                                          │    │
-│  │  1. SBERT Encode  (all-MiniLM-L6-v2)    │    │
-│  │  2. Category   →  LogisticRegression     │    │
-│  │  3. Team       →  LinearSVC             │    │
-│  │  4. Priority   →  LinearSVC             │    │
-│  │  5. TTR        →  Ridge Regression      │    │
-│  │  6. Action     →  FAISS cosine search   │    │
-│  │  7. Routing    →  Confidence threshold  │    │
-│  └──────────────────────────────────────────┘    │
-│                                                   │
-│   analytics.py ──────── database.py (SQLite)      │
-└─────────────────────────────────────────────────┘
-                    │
-              ┌─────┴──────┐
-              │   models/  │
-              │  5 × .pkl  │
-              └────────────┘
+```mermaid
+graph TD
+    %% Styling
+    classDef frontend fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
+    classDef backend fill:#009688,stroke:#333,stroke-width:2px,color:#fff
+    classDef model fill:#8A2BE2,stroke:#333,stroke-width:2px,color:#fff
+    classDef db fill:#003B57,stroke:#333,stroke-width:2px,color:#fff
+
+    %% Frontend Components
+    subgraph Frontend [React Frontend - Port 5173]
+        UI[User Interface<br/>Dashboard, Ticket View, Analytics]
+    end
+
+    %% Backend Components
+    subgraph Backend [FastAPI Backend - Port 8000]
+        API[REST API Endpoints]
+        Handler[TicketModelHandler]
+        Analytics[analytics.py]
+    end
+
+    %% Database
+    DB[(SQLite Database<br/>data/db/tickets.db)]
+
+    %% Models Pipeline
+    subgraph Models [ML Pipeline]
+        SBERT[1. SBERT Encode<br/>all-MiniLM-L6-v2]
+        Cat[2. Category<br/>Logistic Regression]
+        Team[3. Team<br/>LinearSVC]
+        Prio[4. Priority<br/>LinearSVC]
+        TTR[5. TTR<br/>Ridge Regression]
+        Action[6. Action Retrieval<br/>FAISS Cosine Search]
+        Route[7. Routing Logic<br/>Confidence Threshold]
+    end
+
+    %% Connections
+    UI -- JSON payload --> API
+    API --> Handler
+    Handler --> SBERT
+    SBERT --> Cat & Team & Prio
+    SBERT & Prio & Cat --> TTR
+    SBERT --> Action
+    Cat & Team & Prio & TTR & Action --> Route
+    Route --> API
+    API -- Predictions --> UI
+
+    Analytics --> DB
+    API --> DB
+
+    %% Apply Styles
+    class UI,Frontend frontend
+    class API,Handler,Analytics,Backend backend
+    class SBERT,Cat,Team,Prio,TTR,Action,Route,Models model
+    class DB db
 ```
 
 **Two-stage hybrid pipeline:**
