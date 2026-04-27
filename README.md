@@ -408,15 +408,7 @@ npm run dev
 8. Reimers & Gurevych — Sentence-BERT. *EMNLP*, 2019. [↗](https://www.sbert.net/)
 
 ---
-
-## 👥 Team
-
-| Name | Role |
-|---|---|
-| Nagoor appa M (720922243049) | ML Pipeline & Model Training |
-| Pradeep R (720922243054) | Data Engineering |
-| **Srinath S (720922243066)** | **Full-Stack Development & Architecture** |
-| Tamilselvan J (720922243071) | Research & Evaluation |
+ 
 
 <div align="center">
 
