@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ml_engine"
+version = "0.1.0"
+description = "Machine learning engine for automated support ticket handling"
+authors = [
+    {name = "Srinath"}
+]
+dependencies = [
+    "scikit-learn",
+    "pandas",
+    "numpy",
+    "fastapi",
+    "uvicorn"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

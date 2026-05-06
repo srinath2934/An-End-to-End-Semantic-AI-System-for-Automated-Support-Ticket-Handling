@@ -17,7 +17,9 @@
 !models/**
 !notebooks/**
 !docs/**
-!IEEE_Paper_Submission/**
+!ml_engine/**
+!reports/**
+!tests/**
 
 # ------------------------------------------------------------
 # ALLOWED ROOT CONFIG FILES
@@ -26,6 +28,8 @@
 !requirements.txt
 !.gitignore
 !.gitattributes
+!Makefile
+!pyproject.toml
 
 # ------------------------------------------------------------
 # EXPLICIT EXCLUSIONS (Even within allowed folders)
@@ -57,6 +61,7 @@
 **/*.pt
 **/*.pth
 **/*.safetensors
+**/*.zip
 **/.ipynb_checkpoints/
 notebooks/action_predictor_corporate/**
 
@@ -74,6 +79,16 @@ data/processed/*.csv
 **/*.fdb_latexmk
 **/*.pdf
 **/*.docx
+**/*.pptx
+
+# Temp / internal docs files
+docs/internal/
+docs/PPT_CONTENT_COPY_PASTE.txt
+docs/LIT_REVIEW_TABLE_EASY.txt
+docs/zeroth_review_content.txt
+docs/architecture_design.md.resolved
+docs/template_structure.json
+docs/implementation_plan.md
 
 # IDE & OS Junk
 **/.vscode/

@@ -63,7 +63,7 @@ from backend.analytics import calculate_kpis, get_category_distribution, get_pre
 async def get_tickets():
     try:
         # Use new DB function
-        return fetch_tickets(limit=100)
+        return fetch_tickets(limit=300)
     except Exception as e:
         print(f"Backend Error loading tickets: {e}")
         return []
