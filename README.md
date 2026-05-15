@@ -1,7 +1,8 @@
 <div align="center">
 
-# 🎫 Semantic AI Support System
-### An End-to-End Automated Support Ticket Handling System
+# 🎫 Semantic AI Driven Multi Task Ticket Routing System Using SBERT Embeddings and Confidence Based Intelligent Automation Framework
+### An End-to-End Automated Support Ticket Handling System"""
+
 
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
