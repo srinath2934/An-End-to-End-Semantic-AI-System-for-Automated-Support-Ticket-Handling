@@ -9,24 +9,13 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 
-*A Full-Stack AI SaaS product that ingests raw IT tickets and predicts Category, Team, Priority, and ETA simultaneously in under 200ms using a Deep Learning backbone.*
+*A Full-Stack AI prototype that ingests raw IT tickets and predicts Category, Team, Priority, and ETA simultaneously in under 200ms using a Deep Learning backbone.*
 
 </div>
 
 ---
 
-### 👥 Authors
-**Soundarya B, Pradeep R, Venodhani A. R, Srinath S, Nagoor Appa M, Tamilselvan J**  
-*Department of Artificial Intelligence and Data Science, JCT College of Engineering and Technology, Coimbatore, India*
-
-### 📄 Abstract
-Current ticket routing systems can be described as basing their logic and routing capabilities on either the key word or rule system, which do not adequately reflect the intent of the semantic reasoning but leads to misclassification, latent resolutions, and higher operations expenses. This paper suggests a semantic AI-based ticket routing system by using the Sentence-BERT embeddings along with multi-task learning to optimize and automate it. The system encodes text in the tickets to dense embeddings with a lightweight transformer model which also completes category classification, team assignment, prediction of priority, and estimation of the resolution time. A retrieval module of similarity (cosine similarity) is used to map the tickets to fixed solution actions making it explainable and minimal computationally costly. Moreover, there is a balance of automation and human control through routing mechanism that is based on confidence. The effectiveness of the proposed approach is proven by experimental results that prove the routing accuracy and efficiency improvement by up to 99.84% accuracy reducing manual intervention by 82 percent.
-
-**Keywords:** *Semantic AI, SBERT, Ticket Routing, Multi-Task Learning, Cosine Similarity, Automation and NLP.*
-
----
-
-## 💼 The Business Impact & ROI
+## 💼 The Problem We Are Solving
 
 In large enterprise IT environments, **Level 1 (L1) Support Agents spend up to 30% of their time simply reading and routing tickets** to the correct technical teams. 
 
@@ -37,9 +26,9 @@ This project is a production-grade AI solution designed to eliminate that bottle
 
 ---
 
-## 🚀 The Product: Full-Stack Integration
+## 🚀 The Prototype: Full-Stack Integration
 
-This is not just a Jupyter Notebook—it is a fully deployed, production-ready system consisting of three major engineering components:
+This is a fully functional, production-ready prototype consisting of three major engineering components:
 
 ```mermaid
 graph TD
@@ -167,5 +156,5 @@ jupyter notebook
 > **Note:** Run `02.1_MTL_Model_Training.ipynb` to kick off the 500-epoch training loop!
 
 <div align="center">
-⭐ <strong>From Data Engineering to Deep Learning to Production SaaS.</strong> ⭐
+⭐ <strong>From Data Engineering to Deep Learning to Full-Stack Prototype.</strong> ⭐
 </div>
