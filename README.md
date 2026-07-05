@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎫 Enterprise Semantic AI: Automated Support Ticket Dispatcher
+# 🎫 Semantic AI Driven Multi Task Ticket Routing System Using SBERT Embeddings and Confidence Based Intelligent Automation Framework
 ### An End-to-End Production Machine Learning System
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
