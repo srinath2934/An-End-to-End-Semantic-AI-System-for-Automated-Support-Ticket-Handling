@@ -37,22 +37,29 @@ graph TD
     classDef ml fill:#8A2BE2,stroke:#333,stroke-width:2px,color:#fff
     classDef rag fill:#009688,stroke:#333,stroke-width:2px,color:#fff
     classDef llm fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
+    classDef ops fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
+    classDef deploy fill:#34495e,stroke:#333,stroke-width:2px,color:#fff
     classDef output fill:#FF4B4B,stroke:#333,stroke-width:2px,color:#fff
 
-    Ticket["📥 Raw IT Support Ticket"]:::input --> SBERT
+    Ticket["📥 Raw IT Support Ticket"]:::input --> API
     
-    subgraph Phase1 [Phase 1: Semantic Multi-Task Routing]
-        SBERT["🧠 SBERT Embeddings<br/>(all-MiniLM-L6-v2)"]:::ml --> Trunk["Shared Neural Trunk"]:::ml
-        Trunk --> Heads["4 Neural Heads:<br/>Category | Team | Priority | ETA"]:::ml
-    end
-    
-    subgraph Phase2 [Phase 2: Action Plan Generation]
-        Heads --> Search["🔍 Vector Search (RAG)<br/>Query Past Historical Tickets"]:::rag
-        Search --> Prompt["Context-Aware Prompt"]:::rag
-        Prompt --> Azure["☁️ Azure OpenAI LLM"]:::llm
+    subgraph Cloud [🌐 Azure Free Tier Deployment]
+        API["⚙️ FastAPI Backend"]:::deploy --> SBERT
+
+        subgraph Phase1 [Phase 1: Semantic Multi-Task Routing]
+            SBERT["🧠 SBERT Embeddings<br/>(all-MiniLM-L6-v2)"]:::ml --> Trunk["Shared Neural Trunk"]:::ml
+            Trunk --> Heads["4 Neural Heads:<br/>Category | Team | Priority | ETA"]:::ml
+            Trunk -.-> WandB["📈 Weights & Biases<br/>(MLOps Tracking)"]:::ops
+        end
+        
+        subgraph Phase2 [Phase 2: Action Plan Generation]
+            Heads --> Search["🔍 Vector Search (RAG)<br/>Query Past Historical Tickets"]:::rag
+            Search --> Prompt["Context-Aware Prompt"]:::rag
+            Prompt --> OpenAI["☁️ Azure OpenAI LLM"]:::llm
+        end
     end
 
-    Azure --> Final["✅ Autonomous Resolution & Action Plan"]:::output
+    OpenAI --> Final["✅ Autonomous Resolution & Action Plan"]:::output
 ```
 
 ### 1. The High-Concurrency API (FastAPI)
