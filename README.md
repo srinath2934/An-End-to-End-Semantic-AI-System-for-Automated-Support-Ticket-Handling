@@ -15,6 +15,17 @@
 
 ---
 
+### 👥 Authors
+**Soundarya B, Pradeep R, Venodhani A. R, Srinath S, Nagoor Appa M, Tamilselvan J**  
+*Department of Artificial Intelligence and Data Science, JCT College of Engineering and Technology, Coimbatore, India*
+
+### 📄 Abstract
+Current ticket routing systems can be described as basing their logic and routing capabilities on either the key word or rule system, which do not adequately reflect the intent of the semantic reasoning but leads to misclassification, latent resolutions, and higher operations expenses. This paper suggests a semantic AI-based ticket routing system by using the Sentence-BERT embeddings along with multi-task learning to optimize and automate it. The system encodes text in the tickets to dense embeddings with a lightweight transformer model which also completes category classification, team assignment, prediction of priority, and estimation of the resolution time. A retrieval module of similarity (cosine similarity) is used to map the tickets to fixed solution actions making it explainable and minimal computationally costly. Moreover, there is a balance of automation and human control through routing mechanism that is based on confidence. The effectiveness of the proposed approach is proven by experimental results that prove the routing accuracy and efficiency improvement by up to 99.84% accuracy reducing manual intervention by 82 percent.
+
+**Keywords:** *Semantic AI, SBERT, Ticket Routing, Multi-Task Learning, Cosine Similarity, Automation and NLP.*
+
+---
+
 ## 💼 The Business Impact & ROI
 
 In large enterprise IT environments, **Level 1 (L1) Support Agents spend up to 30% of their time simply reading and routing tickets** to the correct technical teams. 
