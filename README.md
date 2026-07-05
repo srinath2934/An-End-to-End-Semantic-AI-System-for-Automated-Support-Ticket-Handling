@@ -15,14 +15,14 @@
 
 ---
 
-## 💼 The Problem We Are Solving
+## 💼 The Problem We Are Solving (Semantic vs Keywords)
 
-In large enterprise IT environments, **Level 1 (L1) Support Agents spend up to 30% of their time simply reading and routing tickets** to the correct technical teams. 
+Legacy IT routing systems rely entirely on rigid **keyword searches** or **rule-based filtering**. If an employee submits a ticket saying *"my screen went black"*, a keyword system searching for *"monitor broken"* will fail, leading to misclassification and delayed resolution.
 
-This project is a production-grade AI solution designed to eliminate that bottleneck. By deploying a mathematically balanced, highly accurate Deep Learning model, this system:
-- **Saves thousands of human hours per week** by auto-dispatching tickets.
-- **Prevents SLA Breaches** by instantly flagging high-urgency issues.
-- **Reduces Operational Costs** by bypassing L1 triage for standard, predictable requests.
+This project solves the **Semantic Problem** instead of relying on keywords. By leveraging SBERT embeddings, the AI understands the true contextual *intent* of the ticket. This allows it to:
+- **Save thousands of human hours per week** by auto-dispatching tickets accurately.
+- **Prevent SLA Breaches** by instantly flagging high-urgency issues regardless of the wording.
+- **Reduce Operational Costs** by bypassing L1 triage for standard, predictable requests.
 
 ---
 
@@ -33,33 +33,48 @@ This is a fully functional, production-ready prototype consisting of three major
 ```mermaid
 graph TD
     %% Styling
-    classDef input fill:#FFBE00,stroke:#333,stroke-width:2px,color:#000
-    classDef ml fill:#8A2BE2,stroke:#333,stroke-width:2px,color:#fff
-    classDef rag fill:#009688,stroke:#333,stroke-width:2px,color:#fff
-    classDef llm fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
+    classDef input fill:#f9f9f9,stroke:#333,stroke-width:2px
+    classDef sbert fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
+    classDef mtl fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    classDef head fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef rag fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px,color:#000
     classDef ops fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
     classDef deploy fill:#34495e,stroke:#333,stroke-width:2px,color:#fff
-    classDef output fill:#FF4B4B,stroke:#333,stroke-width:2px,color:#fff
+    classDef output fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#000
 
-    Ticket["📥 Raw IT Support Ticket"]:::input --> API
+    %% Inputs
+    Ticket[📥 New IT Support Ticket]:::input --> API
     
     subgraph Cloud [🌐 Azure Free Tier Deployment]
         API["⚙️ FastAPI Backend"]:::deploy --> SBERT
 
-        subgraph Phase1 [Phase 1: Semantic Multi-Task Routing]
-            SBERT["🧠 SBERT Embeddings<br/>(all-MiniLM-L6-v2)"]:::ml --> Trunk["Shared Neural Trunk"]:::ml
-            Trunk --> Heads["4 Neural Heads:<br/>Category | Team | Priority | ETA"]:::ml
-            Trunk -.-> WandB["📈 Weights & Biases<br/>(MLOps Tracking)"]:::ops
+        %% SBERT Backbone
+        subgraph PyTorch Neural Network
+            SBERT[1. SBERT Backbone<br>Fine-tuned all-MiniLM-L6-v2]:::sbert
+            
+            SBERT -- "384-dim Embedding" --> SharedTrunk[2. Shared Dense Layers<br>ReLU Activation]:::mtl
+            
+            %% Output Heads
+            SharedTrunk --> CatHead[3a. Category Head<br>CrossEntropyLoss]:::head
+            SharedTrunk --> TeamHead[3b. Team Head<br>CrossEntropyLoss]:::head
+            SharedTrunk --> PrioHead[3c. Priority Head<br>CrossEntropyLoss]:::head
+            SharedTrunk --> ETAHead[3d. ETA Head<br>MSELoss]:::head
+            
+            SharedTrunk -.-> WandB["📈 Weights & Biases<br>(Live MLOps Tracking)"]:::ops
         end
-        
-        subgraph Phase2 [Phase 2: Action Plan Generation]
-            Heads --> Search["🔍 Vector Search (RAG)<br/>Query Past Historical Tickets"]:::rag
-            Search --> Prompt["Context-Aware Prompt"]:::rag
-            Prompt --> OpenAI["☁️ Azure OpenAI LLM"]:::llm
-        end
+
+        %% RAG Component
+        SBERT -- "384-dim Embedding" --> FAISS[(4. FAISS Vector DB<br>Cosine Similarity)]:::rag
+        FAISS -- "Fetch Top-1 Action" --> LLM[5. Azure OpenAI LLM<br>Context-Aware Prompt]:::rag
+        Ticket -.-> LLM
     end
 
-    OpenAI --> Final["✅ Autonomous Resolution & Action Plan"]:::output
+    %% Outputs
+    CatHead --> OutCat(Category Output):::output
+    TeamHead --> OutTeam(Team Output):::output
+    PrioHead --> OutPrio(Priority Output):::output
+    ETAHead --> OutETA(ETA Output):::output
+    LLM --> OutDraft(Autonomous Resolution Plan):::output
 ```
 
 ### 1. The High-Concurrency API (FastAPI)
