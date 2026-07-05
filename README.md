@@ -33,34 +33,26 @@ This is not just a Jupyter Notebook—it is a fully deployed, production-ready s
 ```mermaid
 graph TD
     %% Styling
-    classDef frontend fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
-    classDef backend fill:#009688,stroke:#333,stroke-width:2px,color:#fff
+    classDef input fill:#FFBE00,stroke:#333,stroke-width:2px,color:#000
     classDef ml fill:#8A2BE2,stroke:#333,stroke-width:2px,color:#fff
-    classDef db fill:#FFBE00,stroke:#333,stroke-width:2px,color:#000
+    classDef rag fill:#009688,stroke:#333,stroke-width:2px,color:#fff
+    classDef llm fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
+    classDef output fill:#FF4B4B,stroke:#333,stroke-width:2px,color:#fff
 
-    User["👨‍💻 End User / Employee"] -->|Submits IT Ticket| UI
+    Ticket["📥 Raw IT Support Ticket"]:::input --> SBERT
     
-    subgraph Frontend [React.js Dashboard]
-        UI["💻 Real-Time Monitoring<br/>(Vite + React)"]:::frontend
+    subgraph Phase1 [Phase 1: Semantic Multi-Task Routing]
+        SBERT["🧠 SBERT Embeddings<br/>(all-MiniLM-L6-v2)"]:::ml --> Trunk["Shared Neural Trunk"]:::ml
+        Trunk --> Heads["4 Neural Heads:<br/>Category | Team | Priority | ETA"]:::ml
     end
     
-    subgraph Backend [FastAPI Server]
-        API["⚙️ High-Concurrency REST API<br/>(Python + Uvicorn)"]:::backend
-    end
-    
-    subgraph MachineLearning [PyTorch Multi-Task Model]
-        Model["🧠 AI Dispatcher<br/>(SBERT + Shared Trunk)"]:::ml
-    end
-    
-    subgraph Storage [Database]
-        DB[(🗄️ SQLite Database<br/>Tickets & Predictions)]:::db
+    subgraph Phase2 [Phase 2: Action Plan Generation]
+        Heads --> Search["🔍 Vector Search (RAG)<br/>Query Past Historical Tickets"]:::rag
+        Search --> Prompt["Context-Aware Prompt"]:::rag
+        Prompt --> Azure["☁️ Azure OpenAI LLM"]:::llm
     end
 
-    UI -->|JSON Request| API
-    API -->|Raw Text| Model
-    Model -->|Category, Team, Priority, ETA| API
-    API -->|Logs Predictions| DB
-    API -->|JSON Response| UI
+    Azure --> Final["✅ Autonomous Resolution & Action Plan"]:::output
 ```
 
 ### 1. The High-Concurrency API (FastAPI)
