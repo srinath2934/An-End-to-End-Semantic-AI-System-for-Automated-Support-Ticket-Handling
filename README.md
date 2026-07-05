@@ -37,7 +37,7 @@ graph TD
 
     Ticket["Raw IT Ticket Text"] --> SBERT
     
-    subgraph Deep Learning Architecture [PyTorch nn.Module]
+    subgraph DeepLearningArchitecture [PyTorch nn.Module]
         SBERT[1. SBERT Embeddings<br/>all-MiniLM-L6-v2]
         Trunk[2. Shared Neural Trunk<br/>128 → 64 dims + Dropout]
         
@@ -50,7 +50,7 @@ graph TD
     end
 
     %% Apply Styles
-    class SBERT,Trunk,Deep Learning Architecture model
+    class SBERT,Trunk,DeepLearningArchitecture model
     class Head1,Head2,Head3,Head4 head
 ```
 
