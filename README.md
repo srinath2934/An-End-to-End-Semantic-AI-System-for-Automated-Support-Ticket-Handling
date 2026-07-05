@@ -30,6 +30,39 @@ This project is a production-grade AI solution designed to eliminate that bottle
 
 This is not just a Jupyter Notebook—it is a fully deployed, production-ready system consisting of three major engineering components:
 
+```mermaid
+graph TD
+    %% Styling
+    classDef frontend fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
+    classDef backend fill:#009688,stroke:#333,stroke-width:2px,color:#fff
+    classDef ml fill:#8A2BE2,stroke:#333,stroke-width:2px,color:#fff
+    classDef db fill:#FFBE00,stroke:#333,stroke-width:2px,color:#000
+
+    User["👨‍💻 End User / Employee"] -->|Submits IT Ticket| UI
+    
+    subgraph Frontend [React.js Dashboard]
+        UI["💻 Real-Time Monitoring<br/>(Vite + React)"]:::frontend
+    end
+    
+    subgraph Backend [FastAPI Server]
+        API["⚙️ High-Concurrency REST API<br/>(Python + Uvicorn)"]:::backend
+    end
+    
+    subgraph MachineLearning [PyTorch Multi-Task Model]
+        Model["🧠 AI Dispatcher<br/>(SBERT + Shared Trunk)"]:::ml
+    end
+    
+    subgraph Storage [Database]
+        DB[(🗄️ SQLite Database<br/>Tickets & Predictions)]:::db
+    end
+
+    UI -->|JSON Request| API
+    API -->|Raw Text| Model
+    Model -->|Category, Team, Priority, ETA| API
+    API -->|Logs Predictions| DB
+    API -->|JSON Response| UI
+```
+
 ### 1. The High-Concurrency API (FastAPI)
 The trained PyTorch weights are loaded into memory via a RESTful FastAPI backend. It exposes a `/predict` endpoint that processes incoming JSON tickets from the company portal and returns the routed team, category, and ETA in less than **200 milliseconds**.
 
