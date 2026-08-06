@@ -121,4 +121,6 @@ This project is organized to show engineering skills beyond raw accuracy numbers
 - ✅ Frontend integration and analytics dashboard (frontend/src, docs/screenshots).
 
 ---
-If you want I can also embed a confusion-matrix image or a numeric confusion matrix table for the Action classifier — provide the image path (e.g., `docs/screenshots/action_confusion.png`) or the numeric matrix and I will add it to the Results section.
+Author 
+
+thank you for reading this repo 
