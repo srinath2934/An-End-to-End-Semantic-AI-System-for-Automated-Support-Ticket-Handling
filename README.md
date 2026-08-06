@@ -325,15 +325,3 @@ curl -X POST "http://127.0.0.1:8000/predict" -H "Content-Type: application/json"
 Notes: If pickles are missing, `ml_engine/inference.TicketModelHandler.load_models` will raise FileNotFoundError. Review `ml_engine/inference.py` for expected artifact paths.
 
 ---
-## Recruiter section — why this project demonstrates production AI engineering
-- Evidence of end-to-end engineering: notebooks show data prep & model training; `ml_engine/inference.py` and `backend/main.py` implement a production-style inference service; frontend demonstrates integration and UX for validation.  
-- Explicit engineering artifacts: serialized models loaded at startup, analytics endpoints, DB audit schema, and architecture diagrams that describe deployment and scaling trade-offs.  
-- Demonstrates practical choices: CPU-friendly SBERT model, precomputed KB embeddings for fast retrieval, clean separation of concerns between training (notebooks) and serving (ml_engine + backend).  
-
----
-If you want, I will now:
-1) Replace this repository README.md with this file (commit to `main`) — I will not change code.  
-2) Add a minimal `scripts/run_demo.sh` that starts the backend and posts one sample ticket (no model artifacts added).  
-3) Create `docs/README_PORTFOLIO.md` that highlights the exact notebook cells (line references) to run for reproducing key metrics.
-
-Tell me which of the follow-ups (1/2/3) you want me to perform and I will commit accordingly. If you approve, I will commit this README to main now.
