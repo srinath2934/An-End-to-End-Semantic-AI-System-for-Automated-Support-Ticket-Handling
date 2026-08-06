@@ -1,143 +1,118 @@
 # Semantic AI Ticket Intelligence Platform
 
-Production-oriented expansion of research presented at IEEE ICIRCA 2026.
+TL;DR
+- Built an end-to-end semantic ticket intelligence system (research → production) that turns raw support tickets into: category, routing team, priority, and ETA predictions using transformer embeddings + FAISS retrieval + a PyTorch multi-task model. I (Srinath S) implemented the data pipeline, modeling experiments, inference service (FastAPI), and a React demo UI.
 
-This project builds on my semantic IT ticket routing research and expands it into an end-to-end AI engineering system. The original research focused on semantic routing using SBERT embeddings and FAISS vector search. The current ongoing implementation extends that idea with PyTorch multi-task learning, FastAPI inference, data balancing, model evaluation, and MLOps-oriented tracking.
+Why this matters (one line)
+- Replaces brittle keyword routing with semantic understanding, improving routing robustness and enabling faster, more accurate triage in enterprise helpdesks.
 
-## Status
+Quick facts
+- Dataset: started from a 48k-ticket base, processed into a 108,819-row training set.
+- Main components: Embedding (SBERT / HF), FAISS retrieval, PyTorch multi-task model, FastAPI inference, React + Vite demo.
+- Stack: Python 3.11, PyTorch, Hugging Face, FAISS, FastAPI, React (Vite)
 
-Ongoing development.
+Contents / quick map
+- notebooks/ — all EDA and modeling experiments (01_data_preparation.ipynb, 02_ticket_classification.ipynb, etc.)
+- ml_engine/ — inference and model utilities (inference.py)
+- backend/ — FastAPI app (main.py), analytics, and DB glue
+- frontend/ — React + Vite demo UI
+- models/ — trained models, indices, and artifacts (not always checked in; see README notes)
+- data/ — processed datasets and examples
+- reports/ — experimental writeups
 
-The goal is to move from research validation to a practical AI system that can classify support tickets, route them to the right team, estimate priority, and predict resolution effort from raw ticket text.
+What I implemented (high level)
+- Data engineering: cleaning, label engineering, WordNet-based augmentation, class balancing and resampling.
+- Semantic retrieval: SBERT/Hugging Face embeddings + FAISS for nearest-neighbor retrieval and action hinting.
+- Modeling: PyTorch shared trunk (multi-task) with separate heads for Category, Team, Priority (classification) and ETA (regression).
+- Inference: FastAPI endpoints that serve prediction + retrieval results; minimal React demo to post tickets and show routing recommendations.
+- MLOps: experiment tracking using Weights & Biases (W&B) in notebooks and training scripts.
 
-## Problem
+Key results (replace placeholders with numbers from your final run)
+| Metric | Score |
+|---|---|
+| Category accuracy | 0.XX (replace with your best model result) |
+| Team routing accuracy | 0.XX |
+| Priority F1 (macro) | 0.XX |
+| ETA RMSE (hours) | X.XX |
 
-Traditional IT support routing often depends on keyword rules and manual triage. That fails when users describe the same issue in different language.
+Notes: I intentionally left metric placeholders so you can paste in final numbers from your best experiment notebook (notebooks/models.ipynb or final_hybrid_system.ipynb).
 
-Example:
-
-```text
-"my screen went black"
-```
-
-A keyword-based rule looking for "monitor broken" may miss the intent. A semantic system should understand that both tickets may refer to a display or hardware issue.
-
-## Solution overview
-
-The system uses transformer-based semantic representations to understand ticket intent and combines them with a multi-task ML architecture.
-
-```text
-Raw IT Ticket
-     |
-     v
-SBERT / Hugging Face Embeddings
-     |
-     +--> FAISS Semantic Retrieval
-     |
-     v
-PyTorch Shared Trunk
-     |
-     +--> Category Head
-     +--> Team Routing Head
-     +--> Priority Head
-     +--> ETA Regression Head
-     |
-     v
-FastAPI Inference Service
-```
-
-## Research phase
-
-The research phase explored semantic ticket routing using:
-
-- Sentence-BERT embeddings
-- FAISS vector indexing
-- confidence-based routing logic
-- enterprise-style incident logs
-- semantic similarity instead of keyword matching
-
-Research status: presented at IEEE ICIRCA 2026.
-
-## Current engineering expansion
-
-The current system extends the research into a more production-oriented architecture:
-
-- Multi-task PyTorch model for Category, Team, Priority, and ETA prediction.
-- Hugging Face / SBERT embedding backbone for semantic ticket representation.
-- FAISS retrieval for nearest-neighbor incident lookup and contextual action hints.
-- FastAPI endpoint for model inference from JSON ticket payloads.
-- Weights & Biases tracking for training experiments and overfitting checks.
-- Data engineering pipeline for cleaning, balancing, and augmenting ticket data.
-
-## Data engineering
-
-The project includes dataset preparation work for model robustness:
-
-- Started from a 48K-ticket base dataset.
-- Engineered missing team labels using NLP feature rules and semantic context.
-- Used NLTK WordNet synonym augmentation to create additional context-preserving ticket variants.
-- Applied statistical resampling to reduce priority-class imbalance.
-- Prepared a 108,819-row dataset for PyTorch dataloaders.
-
-## Model design
-
-The model uses a shared representation with multiple prediction heads:
-
-| Output | Type | Purpose |
-|---|---|---|
-| Category | Classification | Identify the ticket category |
-| Team | Classification | Route the issue to the responsible team |
-| Priority | Classification | Estimate urgency level |
-| ETA | Regression | Predict expected resolution time |
-
-This avoids training four separate models and gives the system a single shared semantic backbone.
-
-## Tech stack
-
-- Python 3.11
-- PyTorch and torch.nn
-- Hugging Face Transformers
-- Sentence-BERT / all-MiniLM-L6-v2
-- FAISS vector search
-- FastAPI, Uvicorn, Pydantic
-- Weights & Biases
-- Pandas, NLTK, Scikit-learn
-- Jupyter Notebook
-
-## Reproduce locally
-
+Demo — run locally (shortest path)
+1) Install dependencies
 ```bash
-git clone https://github.com/srinath2934/An-End-to-End-Semantic-AI-System-for-Automated-Support-Ticket-Handling.git
-cd An-End-to-End-Semantic-AI-System-for-Automated-Support-Ticket-Handling
+# from repo root
 pip install -r requirements.txt
+# or, for modern environments
+python -m pip install -r requirements.txt
 ```
 
-For notebook-based training:
-
+2) Start the backend (FastAPI)
 ```bash
-cd "New Data Analysis"
-jupyter notebook
+# from repo root
+uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+```
+Environment variables (optional but recommended):
+- MODEL_PATH — path to your saved PyTorch model
+- FAISS_INDEX_PATH — path to FAISS index (.index)
+- WANDB_API_KEY — if you use Weights & Biases for experiment tracking
+
+3) Start the frontend (React)
+```bash
+cd frontend
+npm ci
+npm run dev
+```
+Open the URL printed by Vite (usually http://localhost:5173) and use the UI to post sample tickets.
+
+Quick API example (curl)
+```bash
+curl -X POST "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d '{"subject": "My laptop screen turned black","description": "After the update my display is blank and only backlight is on."}'
+```
+Response (example)
+```json
+{
+  "category": "display",
+  "team": "desktop-hardware",
+  "priority": "medium",
+  "eta_hours": 12.5,
+  "retrieval_hits": [
+    {"ticket_id": 123, "similarity": 0.92, "short_action": "replace display cable"},
+    {"ticket_id": 456, "similarity": 0.88, "short_action": "instruct user to check brightness/settings"}
+  ]
+}
+```
+(Fields above depend on model and retrieval outputs — actual shape may differ; see backend/main.py and ml_engine/inference.py.)
+
+How to reproduce the modeling experiments
+- Open the notebooks/ directory. Recommended order:
+  1. notebooks/01_data_preparation.ipynb — dataset cleaning & augmentation
+  2. notebooks/02_ticket_classification.ipynb — baseline classification
+  3. notebooks/03_team_priority_prediction.ipynb — multi-task modeling experiments
+  4. notebooks/final_hybrid_system.ipynb — final hybrid pipeline + retrieval
+
+Where to look for the important code
+- backend/main.py — API routes and request/response models
+- ml_engine/inference.py — embedding, retrieval, and model inference logic
+- notebooks/* — experiments, metrics, and evaluation
+
+CI / tests
+- A basic pytest configuration is present (pyproject.toml and tests/). Run:
+```bash
+pytest -q
 ```
 
-Run the multi-task training notebook and configure your Weights & Biases key if experiment tracking is enabled.
+What to add next (optional improvements to make this more recruiter-friendly)
+- Add final numeric metrics into the "Key results" table (from notebooks/models.ipynb).
+- Add a short 10–20s GIF of the UI under docs/ or in README header to showcase the demo quickly.
+- Provide a small, pre-trained lightweight weights file in models/ (or link to a hosted artifact) so reviewers can run a clean demo without retraining.
+- Add `.env.example` listing expected env vars and a scripts/run_demo.sh that starts backend, waits for it, then sends a sample request.
 
-## Portfolio relevance
+Author
+Srinath S — B.Tech Artificial Intelligence & Data Science, Anna University
+- GitHub: https://github.com/srinath2934
+- LinkedIn: https://www.linkedin.com/in/srinath29
 
-This project demonstrates the full AI/ML lifecycle:
-
-- problem framing
-- data preprocessing and augmentation
-- semantic NLP
-- vector search
-- PyTorch model training
-- model evaluation
-- FastAPI inference design
-- MLOps tracking
-- research-to-engineering iteration
-
-## Author
-
-Srinath S  
-B.Tech Artificial Intelligence & Data Science, Anna University  
-GitHub: https://github.com/srinath2934  
-LinkedIn: https://www.linkedin.com/in/srinath29
+License
+(If you'd like a license, add one — e.g., MIT. Currently no license file is included.)
