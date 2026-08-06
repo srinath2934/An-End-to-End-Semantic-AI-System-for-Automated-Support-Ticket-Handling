@@ -1,12 +1,12 @@
 # Semantic AI Ticket Intelligence Platform
 
 ## Executive summary
-An end-to-end engineering implementation that automates support-ticket triage by converting free-text tickets into structured routing decisions: category (type), target team, priority, suggested action, and ETA (time-to-resolution). The system combines semantic embeddings (Sentence‑BERT), embedding-driven retrieval over an action knowledge base, and serialized supervised models for per-output predictions. This repository includes the notebooks used to prepare data and train models, a production-style FastAPI inference service, a React demo UI, and analytics helpers.
+An end-to-end engineering implementation that automates support-ticket triage by converting free-text tickets into structured routing decisions: category (type), target team, priority, suggested action, and ETA (time-to-resolution). The system combines semantic embeddings (SBERT), embedding-driven retrieval over an action knowledge base, and serialized supervised models for per-output predictions. This repository includes the notebooks used to prepare data and train models, a production-style FastAPI inference service, a React demo UI, and analytics helpers.
 
 Immediately explain:
 - Business problem: manual or keyword-based triage misroutes tickets and slows resolution when users describe issues with varied language.
 - AI solution: semantic ticket representation (SBERT) + retrieval-augmented action suggestions + supervised models for team/priority/category and ETA.
-- Technologies: Python, FastAPI, Sentence‑Transformers (all‑MiniLM‑L6‑v2), scikit-learn (pickled models), React + Vite UI, SQLite for audit logs.
+- Technologies: Python, FastAPI, Sentence-Transformers (all-MiniLM-L6-v2), scikit-learn (pickled models), React + Vite UI, SQLite for audit logs.
 - Production relevance: backend loads model artifacts at startup, exposes typed API endpoints, persists audits to SQLite, and provides analytics endpoints consumed by the demo UI.
 
 ---
@@ -16,13 +16,13 @@ Immediately explain:
 Architecture images (from `reports/figures`):
 
 ![High-level architecture](reports/figures/fig1.png)
-*Figure 1 — High-level architecture: ingestion → embedding → retrieval + model inference → response, storage & monitoring.*
+*Figure 1 — High-level architecture: ingestion -> embedding -> retrieval + model inference -> response, storage & monitoring.*
 
 ![Model & retrieval flow](reports/figures/fig2.png)
-*Figure 2 — Model + retrieval flow: SBERT embeddings → retrieval → model heads → merged outputs.*
+*Figure 2 — Model + retrieval flow: SBERT embeddings -> retrieval -> model heads -> merged outputs.*
 
 ![Deployment sketch](reports/figures/fig3.png)
-*Figure 3 — Deployment sketch: containers, storage, and monitoring (illustrative).*
+*Figure 3 — Deployment sketch: architecture overview.*
 
 Frontend & analytics screenshots (from `docs/screenshots`):
 
@@ -40,7 +40,7 @@ Frontend & analytics screenshots (from `docs/screenshots`):
 ## Key highlights (evidence-based)
 
 ✓ Multi-task style outputs (category, team, priority, ETA) produced by serialized models (ml_engine loads pickles).  
-✓ Semantic ticket representation using Sentence‑BERT (all‑MiniLM‑L6‑v2) for embedding.  
+✓ Semantic ticket representation using Sentence-BERT (all-MiniLM-L6-v2) for embedding.  
 ✓ Embedding-based action retrieval using precomputed KB embeddings.  
 ✓ Production-style HTTP API with FastAPI (endpoints: /predict, /tickets, /analytics/*).  
 ✓ React + Vite demo UI for interactive testing (frontend/src).  
@@ -63,18 +63,18 @@ Business pain solved:
 ---
 ## System architecture (concise)
 
-Paste this Mermaid into any viewer that supports it (docs/architecture.md contains the same diagram):
+Paste this Mermaid into any viewer that supports it (docs/architecture.md contains the same diagram). Labels use plain ASCII to avoid rendering errors.
 
 ```mermaid
 flowchart TD
   User[User / Ingest] -->|POST /predict| Frontend[React UI or Ingest Worker]
   Frontend --> Backend[FastAPI inference service]
-  Backend --> Embedding[Sentence‑BERT encoder (all‑MiniLM‑L6‑v2)]
+  Backend --> Embedding[SBERT encoder - all-MiniLM-L6-v2]
   Embedding --> Retrieval[KB embeddings + cosine_similarity]
-  Embedding --> Classifiers[Serialized classifiers & regressor (pickles)]
-  Retrieval --> Merge[Merge predictions + action hint]
+  Embedding --> Classifiers[Serialized classifiers and regressor (pickles)]
+  Retrieval --> Merge[Merge predictions and action hint]
   Classifiers --> Merge
-  Merge --> Response[API response → UI / downstream systems]
+  Merge --> Response[API response to UI or downstream systems]
   Backend --> DB[SQLite audit DB]
   Backend --> Analytics[backend/analytics.py]
 ```
@@ -113,13 +113,13 @@ requirements.txt                 # Python dependencies
 ---
 ## AI pipeline (step-by-step, based on the implementation)
 
-Input → Encoding → Retrieval → Prediction → Routing → Response
+Input -> Encoding -> Retrieval -> Prediction -> Routing -> Response
 
 1. Input: JSON with `description` (POST /predict). Frontend collects more fields when creating tickets but prediction endpoint needs description.
-2. Encoding: `SentenceTransformer('all‑MiniLM‑L6‑v2')` encodes the description to a dense vector (ml_engine/inference.py: line where sbert.encode is called).
+2. Encoding: `SentenceTransformer('all-MiniLM-L6-v2')` encodes the description to a dense vector (ml_engine/inference.py: the sbert.encode call).
 3. Retrieval: precomputed KB embeddings (loaded from `models/action_generator/action_kb_index.pkl`) are filtered by language and compared via cosine similarity to return the top action hint.
 4. Prediction: pickled classifiers/regressor are loaded and applied (category: predict_proba; team & priority: predict; ETA: regressor optionally using one-hot meta features).
-5. Routing logic: `routing_status` assigned as AUTO-DISPATCH / MANUAL-REVIEW / URGENT-ESCALATION based on category confidence and priority (see inference.py lines controlling status decision).
+5. Routing logic: `routing_status` assigned as AUTO-DISPATCH / MANUAL-REVIEW / URGENT-ESCALATION based on category confidence and priority (see inference.py).
 6. Response: structured JSON returned by `/predict` with fields: `category, confidence, team, priority, eta, suggested_action, routing_status`.
 
 ---
@@ -239,7 +239,7 @@ Programming
 - Python 3.10/3.11, JavaScript (React)
 
 ML / NLP
-- sentence-transformers (all‑MiniLM‑L6‑v2), scikit-learn (LinearSVC, Ridge), numpy, pandas
+- sentence-transformers (all-MiniLM-L6-v2), scikit-learn (LinearSVC, Ridge), numpy, pandas
 
 Retrieval
 - cosine_similarity over precomputed embeddings; notebooks explore FAISS (code and diagrams reference FAISS)
@@ -256,8 +256,8 @@ Visualization
 ---
 ## Engineering decisions (based on repository code)
 
-Why Sentence‑BERT?  
-- The inference handler explicitly instantiates `SentenceTransformer('all‑MiniLM‑L6‑v2')` for compact and fast sentence embeddings appropriate for CPU inference and similarity search.
+Why Sentence-BERT?  
+- The inference handler explicitly instantiates `SentenceTransformer('all-MiniLM-L6-v2')` for compact and fast sentence embeddings appropriate for CPU inference and similarity search.
 
 Why embedding + similarity retrieval?  
 - The code loads precomputed KB embeddings (`action_kb_index.pkl`) and uses cosine similarity to retrieve the most relevant action hint. This is a simple, interpretable retrieval approach that the notebooks augment with FAISS experiments.
@@ -288,6 +288,8 @@ Why not keyword search?
 
 ---
 ## How to run (short, exact commands)
+
+We run the system locally; there is no Dockerfile or container deployment in this repository. Follow these local setup steps.
 
 Prereqs: Python 3.10+, Node.js (14+), git.
 
